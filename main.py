@@ -2,13 +2,16 @@ import os
 import subprocess
 import sys
 
-# Run the compiled updater and exit
-subprocess.Popen(["update_helper.exe"])
-sys.exit()
+def run_main_logic():
+    # Show current version
+    with open('local_version.txt', 'r') as file:
+        version = file.read().strip()
+    message = f"current version: {version}"
+    os.system(f'cmd /k echo {message}')
 
-# Read version from file
-with open('local_version.txt', 'r') as file:
-    version = file.read().strip()
-
-message = f"current version 12345: {version}"
-os.system(f'cmd /k echo {message}')
+if "--updated" in sys.argv:
+    run_main_logic()
+else:
+    # Launch updater and exit
+    subprocess.Popen(["update_helper.exe"])
+    sys.exit()

@@ -61,4 +61,5 @@ def check_for_update():
 if __name__ == "__main__":
     updated = check_for_update()
     if updated:
-        subprocess.Popen([LOCAL_MAIN_EXE])  # Relaunch updated main.exe
+        subprocess.Popen([LOCAL_MAIN_EXE, "--updated"])  # Relaunch with flag to skip updater loop
+
