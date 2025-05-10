@@ -1,5 +1,7 @@
 import os
 import update_helper  # Will auto-run update check
+import urllib.request
+import time
 
 update_helper.check_for_update()
 

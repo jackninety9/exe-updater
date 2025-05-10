@@ -1,5 +1,6 @@
 import urllib.request
 import os
+import time
 
 GITHUB_RAW_VERSION = "https://raw.githubusercontent.com/jackninety9/exe-updater/main/version.txt"
 GITHUB_EXE_URL = "https://github.com/jackninety9/exe-updater/raw/main/main.exe"
@@ -8,7 +9,8 @@ LOCAL_EXE_FILE = "main.exe"
 
 
 def get_text_from_url(url):
-    with urllib.request.urlopen(url) as response:
+    url_with_bust = f"{url}?_={int(time.time())}"  # Add timestamp to bypass cache
+    with urllib.request.urlopen(url_with_bust) as response:
         return response.read().decode().strip()
 
 def download_file(url, path):
@@ -32,7 +34,7 @@ def check_for_update():
 
     # Compare versions
     if local_version != latest_version:
-        print("New version found. Updating...")
+        print(f"New version found: {latest_version}. Updating...")
         try:
             download_file(GITHUB_EXE_URL, LOCAL_EXE_FILE)
             with open(LOCAL_VERSION_FILE, 'w') as file:
