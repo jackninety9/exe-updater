@@ -6,7 +6,7 @@ def run_main_logic():
     # Show current version
     with open('local_version.txt', 'r') as file:
         version = file.read().strip()
-    message = f"current version: {version}"
+    message = f"current version 132: {version}"
     os.system(f'cmd /k echo {message}')
 
 if "--updated" in sys.argv:
