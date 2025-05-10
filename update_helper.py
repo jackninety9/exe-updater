@@ -4,12 +4,10 @@ import os
 import subprocess
 import sys
 
-# Remote URLs
 GITHUB_RAW_VERSION = "https://raw.githubusercontent.com/jackninety9/exe-updater/main/version.txt"
 GITHUB_MAIN_EXE_URL = "https://github.com/jackninety9/exe-updater/raw/main/dist/main.exe"
 GITHUB_UPDATER_EXE_URL = "https://github.com/jackninety9/exe-updater/raw/main/dist/update_helper.exe"
 
-# Local files
 LOCAL_VERSION_FILE = "local_version.txt"
 LOCAL_MAIN_EXE = "main.exe"
 LOCAL_UPDATER_EXE = "update_helper.exe"
@@ -22,6 +20,18 @@ def get_text_from_url(url):
 def download_file(url, path):
     urllib.request.urlretrieve(url, path)
 
+def wait_until_file_is_unlocked(path, timeout=10):
+    start = time.time()
+    while True:
+        try:
+            os.rename(path, path)  # Try renaming to check lock
+            return True
+        except PermissionError:
+            if time.time() - start > timeout:
+                print(f"Timeout waiting for {path} to be unlocked.")
+                return False
+            time.sleep(0.5)
+
 def check_for_update():
     if not os.path.exists(LOCAL_VERSION_FILE):
         print("No local_version.txt found.")
@@ -32,27 +42,31 @@ def check_for_update():
 
     try:
         latest_version = get_text_from_url(GITHUB_RAW_VERSION)
-    except:
-        print("Failed to fetch latest version.")
+    except Exception as e:
+        print(f"Failed to fetch latest version: {e}")
         return False
 
     if local_version != latest_version:
         print("New version found. Updating...")
+
+        if not wait_until_file_is_unlocked(LOCAL_MAIN_EXE):
+            print("main.exe is locked. Cannot update.")
+            return False
+
         try:
-            # Download and replace main.exe
             download_file(GITHUB_MAIN_EXE_URL, LOCAL_MAIN_EXE)
+            print("main.exe updated.")
 
-            # Download and replace update_helper.exe
             download_file(GITHUB_UPDATER_EXE_URL, LOCAL_UPDATER_EXE)
+            print("update_helper.exe updated.")
 
-            # Update the version file
             with open(LOCAL_VERSION_FILE, 'w') as file:
                 file.write(latest_version)
+            print("local_version.txt updated.")
 
-            print("Update complete.")
             return True
         except Exception as e:
-            print(f"Failed to update files: {e}")
+            print(f"Failed during update process: {e}")
             return False
     else:
         print("You have the latest version.")
@@ -61,5 +75,5 @@ def check_for_update():
 if __name__ == "__main__":
     updated = check_for_update()
     if updated:
-        subprocess.Popen([LOCAL_MAIN_EXE, "--updated"])  # Relaunch with flag to skip updater loop
-
+        print("Relaunching main.exe...")
+        subprocess.Popen([LOCAL_MAIN_EXE, "--updated"])
