@@ -7,5 +7,5 @@ update_helper.check_for_update()  # Explicitly run update check
 with open('local_version.txt', 'r') as file:
     version = file.read().strip()
 
-message = f"current version 1234: {version}"
+message = f"current version 12345: {version}"
 os.system(f'cmd /k echo {message}')

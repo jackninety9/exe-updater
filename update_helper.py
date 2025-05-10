@@ -2,7 +2,6 @@ import urllib.request
 import time
 import os
 
-
 GITHUB_RAW_VERSION = "https://raw.githubusercontent.com/jackninety9/exe-updater/main/version.txt"
 GITHUB_EXE_URL = "https://github.com/jackninety9/exe-updater/raw/main/dist/main.exe"
 LOCAL_VERSION_FILE = "local_version.txt"
