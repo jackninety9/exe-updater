@@ -1,39 +1,49 @@
 import urllib.request
-import os
-import sys
-import subprocess
 import time
+import os
 
-GITHUB_VERSION = "https://raw.githubusercontent.com/jackninety9/exe-updater/main/version.txt"
-GITHUB_NEW_MAIN = "https://github.com/jackninety9/exe-updater/raw/main/dist/main.exe"
+
+GITHUB_RAW_VERSION = "https://raw.githubusercontent.com/jackninety9/exe-updater/main/version.txt"
+GITHUB_EXE_URL = "https://github.com/jackninety9/exe-updater/raw/main/dist/main.exe"
 LOCAL_VERSION_FILE = "local_version.txt"
-UPDATER_EXE = "updater.exe"
-LOCAL_MAIN = "main.exe"
+LOCAL_EXE_FILE = "main.exe"
 
 def get_text_from_url(url):
-    url += f"?_={int(time.time())}"  # cache-busting query
-    with urllib.request.urlopen(url) as response:
+    url_with_bust = f"{url}?_={int(time.time())}"  # Add timestamp to bypass cache
+    with urllib.request.urlopen(url_with_bust) as response:
         return response.read().decode().strip()
 
-def check_for_update_and_run_updater():
+def download_file(url, path):
+    urllib.request.urlretrieve(url, path)
+
+def check_for_update():
+    # Get local version
     if not os.path.exists(LOCAL_VERSION_FILE):
+        print("No local_version.txt found.")
         return
 
     with open(LOCAL_VERSION_FILE, 'r') as file:
         local_version = file.read().strip()
 
+    # Get latest version from GitHub
     try:
-        latest_version = get_text_from_url(GITHUB_VERSION)
+        latest_version = get_text_from_url(GITHUB_RAW_VERSION)
     except:
+        print("Failed to fetch latest version.")
         return
 
+    # Compare versions
     if local_version != latest_version:
-        print("New version found. Launching updater...")
-        # Launch the updater and pass arguments
-        subprocess.Popen([
-            UPDATER_EXE,
-            GITHUB_NEW_MAIN,
-            LOCAL_MAIN,
-            latest_version
-        ])
-        sys.exit()  # Exit so updater can replace main.exe
+        print("New version found. Updating...")
+        try:
+            download_file(GITHUB_EXE_URL, LOCAL_EXE_FILE)
+            with open(LOCAL_VERSION_FILE, 'w') as file:
+                file.write(latest_version)
+            print("Update complete.")
+        except:
+            print("Failed to download or save the new version.")
+    else:
+        print("You have the latest version.")
+
+if __name__ == "__main__":
+    check_for_update()
