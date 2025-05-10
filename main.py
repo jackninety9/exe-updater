@@ -8,5 +8,5 @@ update_helper.check_for_update_and_run_updater()
 with open('local_version.txt', 'r') as file:
     version = file.read().strip()
 
-message = f"current version: {version}"
+message = f"current version test4: {version}"
 os.system(f'cmd /k echo {message}')
