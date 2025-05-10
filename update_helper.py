@@ -6,8 +6,8 @@ import shutil
 import subprocess
 
 # URLs for the GitHub repository
-GITHUB_RAW_VERSION = "https://raw.githubusercontent.com/jackninety9/clutchkick-overlay/main/version.txt"
-GITHUB_EXE_URL = "https://github.com/jackninety9/clutchkick-overlay/raw/main/clutchkick_overlay.exe"
+GITHUB_RAW_VERSION = "https://raw.githubusercontent.com/jackninety9/exe-updater/main/version.txt"
+GITHUB_EXE_URL = "https://github.com/jackninety9/exe-updater/raw/main/main.exe"
 
 def get_local_version(path):
     """Fetch the local version from the local_version.txt file."""
