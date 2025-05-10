@@ -1,16 +1,12 @@
 import os
-import update_helper  # Will auto-run update check
-import urllib.request
-import time
+import update_helper
 
-update_helper.check_for_update()
+# Check for update (if needed, it will launch updater and exit)
+update_helper.check_for_update_and_run_updater()
 
-# Read version from file
+# Show version after update check
 with open('local_version.txt', 'r') as file:
     version = file.read().strip()
 
-# Create the message
-message = f"current version test3: {version}"
-
-# Windows-specific way to open a terminal and show the message
+message = f"current version: {version}"
 os.system(f'cmd /k echo {message}')
