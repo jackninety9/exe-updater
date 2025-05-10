@@ -1,7 +1,10 @@
 import os
-import update_helper
+import subprocess
+import sys
 
-update_helper.check_for_update()  # Explicitly run update check
+# Run the compiled updater and exit
+subprocess.Popen(["update_helper.exe"])
+sys.exit()
 
 # Read version from file
 with open('local_version.txt', 'r') as file:
