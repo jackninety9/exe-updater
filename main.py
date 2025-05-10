@@ -23,7 +23,7 @@ def replace_update_helper():
 def run_main_logic():
     with open('local_version.txt', 'r') as file:
         version = file.read().strip()
-    message = f"current version: {version}"
+    message = f"Current Version: {version}"
     os.system(f'cmd /k echo {message}')
 
 if "--updated" in sys.argv:
